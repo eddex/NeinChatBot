@@ -1,0 +1,28 @@
+{
+  "name": "NeinChatBot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eddex/NeinChatBot.git"
+  },
+  "keywords": [
+    "telegram",
+    "bot",
+    "9chat",
+    "cookie",
+    "Switzerland"
+  ],
+  "author": "eddex",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/eddex/NeinChatBot/issues"
+  },
+  "dependencies": {
+    "telebot": "^1.0.6"
+  }
+}
