@@ -33,6 +33,21 @@ bot.on('/help', msg => {
   return bot.sendMessage(chatId, `Rule 1: No baguettes.\nRule2: Refer to rule 1.`);
 });
 
+/*
+* Sends the user the name of the OP of a post.
+* @param: url - the url to the post.
+*/
+bot.on('/op', msg => {
+  let checker = require('./post_checker.js');
+  let chatId = msg.chat.id;
+  var op = '';
+  console.log('text=' + msg.text); // TODO: remove '/op ' from the beginning of the string.
+  checker.getOp("http://getcookie.com/p/adB7aAnjo", function(op) {
+    console.log('/op, op=' + op);
+    return bot.sendMessage(chatId, `OP is: ${ op }`);
+  });
+});
+
 bot.on('/debug', msg => {
   let checker = require('./post_checker.js');
   let chatId = msg.chat.id;

@@ -23,5 +23,20 @@ console.log(title);
         console.log("post_checker: scraping finished " + data);
         callback(data);
     });
+  },
+  getOp: function(uri, callback) {
+    var data;
+    request({
+      uri: uri},
+      function(error, response, body) {
+        body = body.substring(body.indexOf("INITIAL_DATA =") + 15);
+        body = body.substring(0, body.indexOf("var INITIAL_SCHEMA") - 10);
+        var json = JSON.parse(body);
+
+        var op = json.data.posts[0].owner.username;
+        console.log(op);
+
+        callback(op);
+      });
   }
 }
