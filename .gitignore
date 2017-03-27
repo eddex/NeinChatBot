@@ -38,3 +38,5 @@ jspm_packages
 
 # Telegram bot token
 *.secret
+
+debug/
