@@ -34,16 +34,19 @@ bot.on('/help', msg => {
 });
 
 /*
-* Sends the user the name of the OP of a post.
-* @param: url - the url to the post.
+* React to any received message.
+* url: If a url to a post is received, the op of the post is returned.
 */
-bot.on('/op', msg => {
+bot.on('text', msg => {
+  if (!msg.text.startsWith("http://getcookie.com/p/")) {
+    console.log("received unsupported text: " + msg.text);
+    return;
+  }
   let checker = require('./post_checker.js');
   let chatId = msg.chat.id;
-  var op = '';
-  console.log('text=' + msg.text); // TODO: remove '/op ' from the beginning of the string.
-  checker.getOp("http://getcookie.com/p/adB7aAnjo", function(op) {
-    console.log('/op, op=' + op);
+  console.log('text=' + msg.text);
+  checker.getOp(msg.text, function(op) {
+    console.log('op=' + op);
     return bot.sendMessage(chatId, `OP is: ${ op }`);
   });
 });
