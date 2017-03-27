@@ -3,23 +3,29 @@
 const request = require('request');
 
 module.exports = {
-  checkForNewPost: function(callback) {
+  checkForNewPosts: function(callback) {
     var data;
     request({
       uri: "http://getcookie.com/group/switzerland" },
       function(error, response, body) {
+
+        // cut away the unnecessary parts before and after the json string.
         body = body.substring(body.indexOf("INITIAL_DATA =") + 15);
         body = body.substring(0, body.indexOf("var INITIAL_SCHEMA") - 10);
-console.log("body:" + body);
         var json = JSON.parse(body);
-console.log(json.data.groups[0].id); // works!
-// there are 30 posts in the json string
-        var title = json.data.groups[0].posts[0].title;
-console.log(title);
 
-        var src = "asd";
+        var previousNewestTimeStamp = 1490532310;
+        // there are always 30 posts in the json string
+        var newPosts = [];
+        for (var i = 0; i < 30; i++) {
+          var timestamp = json.data.groups[0].posts[i].created_at;
+          if (timestamp > previousNewestTimeStamp) {
+            newPosts.push(json.data.groups[0].posts[i]);
+            console.log(timestamp);
+          }
+        }
 
-        data = {text:title, image:src};
+        data = newPosts;
         console.log("post_checker: scraping finished " + data);
         callback(data);
     });

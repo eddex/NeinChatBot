@@ -56,16 +56,13 @@ bot.on('/debug', msg => {
   let chatId = msg.chat.id;
   var text = '';
   var src = '';
-  checker.checkForNewPost(function(data) {
-    text = data.text;
-    src = data.src;
+  checker.checkForNewPosts(function(newPosts) {
+    text = newPosts[0].title;
 
-    console.log('/debug, text=' + text + 'src=' + src);
+    console.log('/debug, title[0]=' + text);
     return bot.sendMessage(chatId, `test: ${ text }`);
   });
 });
-
-
 
 // start the bot
 bot.connect();
