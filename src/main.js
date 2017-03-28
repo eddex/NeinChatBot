@@ -39,7 +39,9 @@ bot.on('/help', msg => {
 */
 bot.on('text', msg => {
   if (!msg.text.startsWith("http://getcookie.com/p/")) {
-    console.log("received unsupported text: " + msg.text);
+    if (!msg.text.startsWith('/debug')) {
+      console.log("received unsupported text: " + msg.text);
+    }
     return;
   }
   let checker = require('./post_checker.js');
@@ -54,13 +56,16 @@ bot.on('text', msg => {
 bot.on('/debug', msg => {
   let checker = require('./post_checker.js');
   let chatId = msg.chat.id;
-  var text = '';
-  var src = '';
-  checker.checkForNewPosts(function(newPosts) {
-    text = newPosts[0].title;
 
-    console.log('/debug, title[0]=' + text);
-    return bot.sendMessage(chatId, `test: ${ text }`);
+  checker.checkForNewPosts(function(newPosts) {
+    if (newPosts == null) {
+      return;
+    }
+    // TODO: create messages with images for each new post. Gifs?
+    for (var post of newPosts) {
+      console.log('sending message with title: ' + post.title);
+      bot.sendMessage(chatId, `[New Post]:\n ${ post.title }`);
+    }
   });
 });
 
