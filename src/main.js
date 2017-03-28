@@ -59,18 +59,31 @@ bot.on('/debug', msg => {
 
   checker.checkForNewPosts(function(newPosts) {
     if (newPosts == null) {
-      return;
+      return bot.sendMessage(chatId, 'nothing new to see.');
     }
 
     for (var post of newPosts) {
       console.log('sending message with title: ' + post.title);
       var photo;
-      var text = `[New Post]:\n${ post.title }\n\nOP: ${ post.owner.username }`
+
+      var a = new Date(post.created_at * 1000);
+      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var year = a.getFullYear();
+      var month = months[a.getMonth()];
+      var date = a.getDate();
+      var hour = a.getHours();
+      var min = (a.getMinutes()<10?'0':'') + a.getMinutes();
+      var sec = (a.getSeconds()<10?'0':'') + a.getSeconds();
+      var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+
+      var text = `New Post (${ time }):\n${ post.title }\n\nOP: ${ post.owner.username }`;
+
       if (post.cover_photo != null) {
 
         // check if post image is a gif.
         if (post.cover_photo.thumbnails['480wa'] != null) {
           photo = post.cover_photo.thumbnails['480wa'].url
+          // gif files have to be sent with the sendVideo() function.
           bot.sendVideo(chatId, photo, {caption: text});
         }
         else {
