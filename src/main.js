@@ -61,10 +61,26 @@ bot.on('/debug', msg => {
     if (newPosts == null) {
       return;
     }
-    // TODO: create messages with images for each new post. Gifs?
+
     for (var post of newPosts) {
       console.log('sending message with title: ' + post.title);
-      bot.sendMessage(chatId, `[New Post]:\n ${ post.title }`);
+      var photo;
+      var text = `[New Post]:\n${ post.title }\n\nOP: ${ post.owner.username }`
+      if (post.cover_photo != null) {
+
+        // check if post image is a gif.
+        if (post.cover_photo.thumbnails['480wa'] != null) {
+          photo = post.cover_photo.thumbnails['480wa'].url
+          bot.sendVideo(chatId, photo, {caption: text});
+        }
+        else {
+          // image is not a gif.
+          photo = post.cover_photo.thumbnails['840w'].url;
+          bot.sendPhoto(chatId, photo, {caption: text});
+        }
+      } else {
+        bot.sendMessage(chatId, text);
+      }
     }
   });
 });

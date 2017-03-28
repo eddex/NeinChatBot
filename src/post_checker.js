@@ -1,6 +1,6 @@
 'use strict';
 
-const timestampSaveFile = 'data/MostRecentTimestamp.txt';
+const TimestampSaveFile = './data/MostRecentTimestamp.txt';
 
 const request = require('request');
 const fs = require('fs');
@@ -17,7 +17,7 @@ module.exports = {
         body = body.substring(0, body.indexOf("var INITIAL_SCHEMA") - 10);
         var json = JSON.parse(body);
 
-        var previousTimestamp = fs.readFileSync(timestampSaveFile).toString();
+        var previousTimestamp = fs.readFileSync(TimestampSaveFile).toString();
         var newPosts = [];
         var newMostRecentTimestamp = previousTimestamp;
         if (previousTimestamp == '') {
@@ -47,7 +47,7 @@ module.exports = {
 
         // save newMostRecentTimestamp to file async if it changed.
         if (!(parseInt(newMostRecentTimestamp, 10) == parseInt(previousTimestamp, 10))) {
-          fs.writeFile(timestampSaveFile, newMostRecentTimestamp, function(err) {
+          fs.writeFile(TimestampSaveFile, newMostRecentTimestamp, function(err) {
             if (err) {
               console.error(err);
             }
@@ -56,7 +56,6 @@ module.exports = {
         } else {
           console.log('newMostRecentTimestamp {' + newMostRecentTimestamp + '} is same as previousTimestamp {' + previousTimestamp + '}');
         }
-
 
         console.log("post_checker: scraping finished. New posts: " + newPosts.length);
 
