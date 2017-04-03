@@ -39,4 +39,8 @@ jspm_packages
 # Telegram bot token
 *.secret
 
+# ignore files in debug directory
 debug/
+
+# ignore all database related files
+*.db

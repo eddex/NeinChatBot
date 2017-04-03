@@ -17,6 +17,7 @@ const bot = new teleBot(token);
 * Sends the user a welcome message.
 */
 bot.on('/start', msg => {
+  // TODO: create user profile in DB.
   let chatId = msg.chat.id;
   let firstName = msg.from.first_name;
   let text = msg.text;
@@ -53,6 +54,12 @@ bot.on('text', msg => {
   });
 });
 
+bot.on('/user', msg => {
+  let dbAccess = require('./db_access.js');
+
+  dbAccess.createUser(msg.chat.id, msg.from);
+});
+
 bot.on('/debug', msg => {
   let checker = require('./post_checker.js');
   let chatId = msg.chat.id;
@@ -64,7 +71,6 @@ bot.on('/debug', msg => {
 
     for (var post of newPosts) {
       console.log('sending message with title: ' + post.title);
-      var photo;
 
       var a = new Date(post.created_at * 1000);
       var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -74,10 +80,11 @@ bot.on('/debug', msg => {
       var hour = a.getHours();
       var min = (a.getMinutes()<10?'0':'') + a.getMinutes();
       var sec = (a.getSeconds()<10?'0':'') + a.getSeconds();
-      var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+      var time = date + '. ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
 
       var text = `New Post (${ time }):\n${ post.title }\n\nOP: ${ post.owner.username }`;
 
+      var photo;
       if (post.cover_photo != null) {
 
         // check if post image is a gif.
