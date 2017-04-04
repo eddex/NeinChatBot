@@ -35,6 +35,20 @@ var db_access = {
         console.info("db_access: user [" + user._id + "] successfully created.");
       }
     });
+  },
+
+  /*
+  * Get all chat IDs that have subscribed to updates of the Switzerland group.
+  */
+  getSubscribersChatIds: function(callback) {
+    var chatIds = [];
+    DB.find({subscription:1},{},function(err, docs) {
+      docs.forEach(function(user) {
+        console.log('subscribed chat: ' + user._id);
+        chatIds.push(user._id);
+      });
+      callback(chatIds);
+    });
   }
 };
 

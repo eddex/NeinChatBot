@@ -23,6 +23,7 @@
     "url": "https://github.com/eddex/NeinChatBot/issues"
   },
   "dependencies": {
+    "cron": "^1.2.1",
     "nedb": "^1.8.0",
     "telebot": "^1.0.6"
   }

@@ -58,6 +58,16 @@ bot.on('text', msg => {
   });
 });
 
+bot.on('/chat', msg => {
+  console.log('chat....');
+  DBAccess.getSubscribersChatIds(function(chatIds) {
+    for (var chatId of chatIds) {
+      return bot.sendMessage(msg.chat.id, `Chat is: ${ chatId }`);
+    }
+  });
+});
+
+
 bot.on('/debug', msg => {
   let checker = require('./post_checker.js');
   let chatId = msg.chat.id;
