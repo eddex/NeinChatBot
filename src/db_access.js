@@ -15,17 +15,17 @@ DB.loadDatabase(function(err) {
 var db_access = {
 
   /*
-   * Create a new user in the DB.
+   * Create a new user in the DB if there is no entry with the same chat ID.
    */
-  createUser: function(chatId, user) {
+  createUserIfNotExists: function(chatId, user) {
     console.log('trying to create new user...');
     var user = {
-     _id: chatId,
-     userId: user.id,
-     userName: user.username,
-     firstName: user.first_name,
-     lastName: user.last_name,
-     subscription: 0
+      _id: chatId,
+      userId: user.id,
+      userName: user.username ? user.username : 'null',
+      firstName: user.first_name ? user.first_name : 'null',
+      lastName: user.last_name ? user.last_name : 'null',
+      subscription: 0
     };
     DB.insert(user, function(err) {
       if (err) {
