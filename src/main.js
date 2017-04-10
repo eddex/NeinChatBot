@@ -1,18 +1,41 @@
 'use strict';
 
-console.log("###############################");
-console.log("NeinChatBot Telegram Bot Server");
-console.log("###############################\n");
+console.log("#################################");
+console.log("# NeinChatBot Telegram Bot Server");
+console.log("#################################\n");
 
 const teleBot = require('TeleBot');
 const fs = require('fs');
 
 // load Telegram bot token from file and create bot
-var token = fs.readFileSync('telegram_token.secret').toString().replace(/\n$/, '');
-console.log('------ Secret Token: [' + token + "]");
+const token = fs.readFileSync('telegram_token.secret').toString().replace(/\r?\n|\r/, '');
+console.log('------ Secret Token: [' + token + ']');
 const bot = new teleBot(token);
 
 const DBAccess = require('./db_access.js');
+
+const CronManager = require('./cron_manager.js');
+CronManager.startJob('*/5 * * * *', function() { // run every 5 minutes.
+  console.log('cron job triggered. (>o<)');
+
+  DBAccess.getSubscribersChatIds(function(chatIds) {
+    let checker = require('./post_checker.js');
+    checker.checkForNewPosts(function(newPosts) {
+      if (newPosts == null) {
+        return console.log('Checked for new posts, nothing found.');
+      }
+      for (var post of newPosts) {
+        formatDateTime(post.created_at, function(time) {
+          var text = `New Post (${ time }):\n${ post.title }\n\nOP: ${ post.owner.username }`;
+          console.log('sending message to subscribers with title: ' + post.title);
+          for (var chatId of chatIds) {
+            sendNewPostToChat(chatId, post.cover_photo, text);
+          }
+        });
+      }
+    });
+  });
+});
 
 /*
 * Handles the /start command.
@@ -66,7 +89,6 @@ bot.on('/chat', msg => {
     }
   });
 });
-
 
 bot.on('/debug', msg => {
   let checker = require('./post_checker.js');

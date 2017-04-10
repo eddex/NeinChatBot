@@ -6,6 +6,12 @@ const request = require('request');
 const fs = require('fs');
 
 module.exports = {
+
+  /*
+  * Parses the content of the Switerland group and returns all new posts since
+  * the method was executed before. If it's the first time, no new posts will be
+  * returned but the timestamp will be saved.
+  */
   checkForNewPosts: function(callback) {
     var data;
     request({
@@ -31,6 +37,7 @@ module.exports = {
         for (var post of json.data.groups[0].posts) {
           var timestamp = post.created_at;
 
+          // only search for new posts if there was a timestamp saved.
           if (!previousTimestamp == '') {
             // parseInt(string, base)
             if (parseInt(timestamp, 10) > parseInt(previousTimestamp, 10)) {
@@ -54,20 +61,19 @@ module.exports = {
             console.log('[ASYNC] new timestamp saved to file.');
           });
         } else {
-          console.log('newMostRecentTimestamp {' + newMostRecentTimestamp + '} is same as previousTimestamp {' + previousTimestamp + '}');
+          console.log('newMostRecentTimestamp {' + newMostRecentTimestamp + '} is same as previousTimestamp {' + previousTimestamp.replace(/\r?\n|\r/, '') + '}');
         }
 
         console.log("post_checker: scraping finished. New posts: " + newPosts.length);
 
-        // return null callback if there are no new posts.
+        // don't execute callback if no new posts were found.
         if (newPosts.length == 0) {
-          console.log('returning null callback.');
-          callback(null);
+          console.log('no new posts. returning without executing callback.');
           return;
         }
 
-        // retrun callback with all new posts.
-        console.log('returning new posts in callback.');
+        // execute callback with all new posts as parameter.
+        console.log('executing callback with new posts.');
         callback(newPosts);
     });
   },
