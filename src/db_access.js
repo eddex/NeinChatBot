@@ -22,9 +22,9 @@ var db_access = {
     var user = {
       _id: chatId,
       userId: user.id,
-      userName: user.username ? user.username : 'null',
-      firstName: user.first_name ? user.first_name : 'null',
-      lastName: user.last_name ? user.last_name : 'null',
+      userName: user.username ? user.username : ' ',
+      firstName: user.first_name ? user.first_name : ' ',
+      lastName: user.last_name ? user.last_name : ' ',
       subscription: 0
     };
     DB.insert(user, function(err) {
@@ -42,12 +42,52 @@ var db_access = {
   */
   getSubscribersChatIds: function(callback) {
     var chatIds = [];
-    DB.find({subscription:1},{},function(err, docs) {
+    DB.find({ subscription: 1 },{},function(err, docs) {
       docs.forEach(function(user) {
         console.log('subscribed chat: ' + user._id);
         chatIds.push(user._id);
       });
       callback(chatIds);
+    });
+  },
+
+  /*
+  * Change subscription for document with _id: chatId to 1.
+  * @param chatId: The chat id of the document to update.
+  */
+  setSubscription: function(chatId, callback) {
+    DB.update({ _id:chatId }, { $set: { subscription: 1 } }, {}, function(err, numReplaced) {
+      if (err) {
+        console.error("Failed to set subscription for user [" + chatId + "]");
+      }
+      else {
+        console.info("Successfully set subscription for user [" + chatId + "]");
+
+        // Clean up DB file. Remove all obsolete entries from the DB file.
+        // This is less performant but will not clutter the DB file until the applicastion is restarted.
+        // (https://github.com/louischatriot/nedb#persistence)
+        DB.persistence.compactDatafile();
+      }
+    });
+  },
+
+  /*
+  * Change subscription for document with _id: chatId to 0.
+  * @param chatId: The chat id of the document to update.
+  */
+  removeSubscription: function(chatId, callback) {
+    DB.update({ _id:chatId }, { $set: { subscription: 0 } }, {}, function(err, numReplaced) {
+      if (err) {
+        console.error("Failed to set subscription for user [" + chatId + "]");
+      }
+      else {
+        console.info("Successfully set subscription for user [" + chatId + "]");
+
+        // Clean up DB file. Remove all obsolete entries from the DB file.
+        // This is less performant but will not clutter the DB file until the applicastion is restarted.
+        // (https://github.com/louischatriot/nedb#persistence)
+        DB.persistence.compactDatafile();
+      }
     });
   }
 };

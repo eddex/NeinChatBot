@@ -14,6 +14,7 @@ const bot = new teleBot(token);
 
 const DBAccess = require('./db_access.js');
 
+// Create and start cron job for new post messages.
 const CronManager = require('./cron_manager.js');
 CronManager.startJob('*/5 * * * *', function() { // run every 5 minutes.
   console.log('cron job triggered. (>o<)');
@@ -59,9 +60,17 @@ bot.on('/help', msg => {
   return bot.sendMessage(chatId, `Rule 1: No baguettes.\nRule2: Refer to rule 1.`);
 });
 
+bot.on('/subscribe', msg => {
+  DBAccess.setSubscription(msg.chat.id);
+});
+
+bot.on('/unsubscribe', msg => {
+  DBAccess.removeSubscription(msg.chat.id);
+});
+
 /*
 * React to any received message.
-* url: If a url to a post is received, the op of the post is returned.
+* If the message contains an url to a post is received, the op of the post is returned.
 */
 bot.on('text', msg => {
   DBAccess.createUserIfNotExists(msg.chat.id, msg.from, function() {
@@ -78,35 +87,6 @@ bot.on('text', msg => {
       console.log('op=' + op);
       return bot.sendMessage(chatId, `OP is: ${ op }`);
     });
-  });
-});
-
-bot.on('/chat', msg => {
-  console.log('chat....');
-  DBAccess.getSubscribersChatIds(function(chatIds) {
-    for (var chatId of chatIds) {
-      return bot.sendMessage(msg.chat.id, `Chat is: ${ chatId }`);
-    }
-  });
-});
-
-bot.on('/debug', msg => {
-  let checker = require('./post_checker.js');
-  let chatId = msg.chat.id;
-
-  checker.checkForNewPosts(function(newPosts) {
-    if (newPosts == null) {
-      return bot.sendMessage(chatId, 'nothing new to see.');
-    }
-
-    for (var post of newPosts) {
-      console.log('sending message with title: ' + post.title);
-
-      formatDateTime(post.created_at, function(time) {
-        var text = `New Post (${ time }):\n${ post.title }\n\nOP: ${ post.owner.username }`;
-        sendNewPostToChat(chatId, post.cover_photo, text);
-      });
-    }
   });
 });
 
