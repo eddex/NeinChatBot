@@ -17,18 +17,18 @@ const DBAccess = require('./db_access.js');
 // Create and start cron job for new post messages.
 const CronManager = require('./cron_manager.js');
 CronManager.startJob('*/5 * * * *', function() { // run every 5 minutes.
-  console.log('cron job triggered. (>o<)');
+  console.log('cron job: cron job triggered. (>o<)');
 
   DBAccess.getSubscribersChatIds(function(chatIds) {
     let checker = require('./post_checker.js');
     checker.checkForNewPosts(function(newPosts) {
       if (newPosts == null) {
-        return console.log('Checked for new posts, nothing found.');
+        return console.log('cron job: checked for new posts, nothing found.');
       }
       for (var post of newPosts) {
         formatDateTime(post.created_at, function(time) {
           var text = `New Post (${ time }):\n${ post.title }\n\nOP: ${ post.owner.username }`;
-          console.log('sending message to subscribers with title: ' + post.title);
+          console.log('cron job: sending message to subscribers with title: ' + post.title);
           for (var chatId of chatIds) {
             sendNewPostToChat(chatId, post.cover_photo, text);
           }
@@ -70,7 +70,7 @@ bot.on('/unsubscribe', msg => {
 
 /*
 * React to any received message.
-* If the message contains an url to a post is received, the op of the post is returned.
+* If the message contains an url to a post, the op of the post is returned.
 */
 bot.on('text', msg => {
   DBAccess.createUserIfNotExists(msg.chat.id, msg.from, function() {

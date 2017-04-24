@@ -18,7 +18,7 @@ var db_access = {
    * Create a new user in the DB if there is no entry with the same chat ID.
    */
   createUserIfNotExists: function(chatId, user) {
-    console.log('trying to create new user...');
+    console.log('db_access: trying to create new user...');
     var user = {
       _id: chatId,
       userId: user.id,
@@ -44,7 +44,7 @@ var db_access = {
     var chatIds = [];
     DB.find({ subscription: 1 },{},function(err, docs) {
       docs.forEach(function(user) {
-        console.log('subscribed chat: ' + user._id);
+        console.log('db_access: subscribed chat: ' + user._id);
         chatIds.push(user._id);
       });
       callback(chatIds);
@@ -58,10 +58,10 @@ var db_access = {
   setSubscription: function(chatId, callback) {
     DB.update({ _id:chatId }, { $set: { subscription: 1 } }, {}, function(err, numReplaced) {
       if (err) {
-        console.error("Failed to set subscription for user [" + chatId + "]");
+        console.error("db_access: failed to set subscription for user [" + chatId + "]");
       }
       else {
-        console.info("Successfully set subscription for user [" + chatId + "]");
+        console.info("db_access: successfully set subscription for user [" + chatId + "]");
 
         // Clean up DB file. Remove all obsolete entries from the DB file.
         // This is less performant but will not clutter the DB file until the applicastion is restarted.
@@ -78,10 +78,10 @@ var db_access = {
   removeSubscription: function(chatId, callback) {
     DB.update({ _id:chatId }, { $set: { subscription: 0 } }, {}, function(err, numReplaced) {
       if (err) {
-        console.error("Failed to set subscription for user [" + chatId + "]");
+        console.error("db_access: failed to remove subscription for user [" + chatId + "]");
       }
       else {
-        console.info("Successfully set subscription for user [" + chatId + "]");
+        console.info("db_access: successfully removed subscription for user [" + chatId + "]");
 
         // Clean up DB file. Remove all obsolete entries from the DB file.
         // This is less performant but will not clutter the DB file until the applicastion is restarted.

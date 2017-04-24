@@ -29,9 +29,9 @@ module.exports = {
         if (previousTimestamp == '') {
           // set newMostRecentTimestamp to 0 to support int comparison.
           newMostRecentTimestamp = 0;
-          console.log('initial startup. no timestamp saved so far.');
+          console.log('post_checker: initial startup. no timestamp saved so far.');
         } else {
-          console.log('searching for new posts...');
+          console.log('post_checker: searching for new posts...');
         }
 
         for (var post of json.data.groups[0].posts) {
@@ -48,7 +48,7 @@ module.exports = {
           // get newMostRecentTimestamp
           if (parseInt(timestamp, 10) > parseInt(newMostRecentTimestamp, 10)) {
             newMostRecentTimestamp = timestamp;
-            console.log('new most recent timestamp: ' + newMostRecentTimestamp);
+            console.log('post_checker: new most recent timestamp: ' + newMostRecentTimestamp);
           }
         }
 
@@ -58,22 +58,22 @@ module.exports = {
             if (err) {
               console.error(err);
             }
-            console.log('[ASYNC] new timestamp saved to file.');
+            console.log('post_checker: [ASYNC] new timestamp saved to file.');
           });
         } else {
-          console.log('newMostRecentTimestamp {' + newMostRecentTimestamp + '} is same as previousTimestamp {' + previousTimestamp.replace(/\r?\n|\r/, '') + '}');
+          console.log('post_checker: newMostRecentTimestamp {' + newMostRecentTimestamp + '} is same as previousTimestamp {' + previousTimestamp.replace(/\r?\n|\r/, '') + '}');
         }
 
         console.log("post_checker: scraping finished. New posts: " + newPosts.length);
 
         // don't execute callback if no new posts were found.
         if (newPosts.length == 0) {
-          console.log('no new posts. returning without executing callback.');
+          console.log('post_checker: no new posts. returning without executing callback.');
           return;
         }
 
         // execute callback with all new posts as parameter.
-        console.log('executing callback with new posts.');
+        console.log('post_checker: executing callback with new posts.');
         callback(newPosts);
     });
   },
