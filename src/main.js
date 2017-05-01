@@ -60,11 +60,15 @@ bot.on('/help', msg => {
 });
 
 bot.on('/subscribe', msg => {
-  DBAccess.setSubscription(msg.chat.id);
+  let chatId = msg.chat.id;
+  DBAccess.setSubscription(chatId);
+  return bot.sendMessage(chatId, `You're now subscribed to updates on new posts in the Switzerland group.`);
 });
 
 bot.on('/unsubscribe', msg => {
-  DBAccess.removeSubscription(msg.chat.id);
+  let chatId = msg.chat.id;
+  DBAccess.removeSubscription(chatId);
+  return bot.sendMessage(chatId, `Subscription cancelled.`);
 });
 
 /*
