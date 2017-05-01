@@ -43,7 +43,6 @@ CronManager.startJob('*/5 * * * *', function() { // run every 5 minutes.
 * Sends the user a welcome message.
 */
 bot.on('/start', msg => {
-  // TODO: create user profile in DB.
   let chatId = msg.chat.id;
   let firstName = msg.from.first_name;
   let text = msg.text;

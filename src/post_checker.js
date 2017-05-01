@@ -9,7 +9,7 @@ module.exports = {
 
   /*
   * Parses the content of the Switerland group and returns all new posts since
-  * the method was executed before. If it's the first time, no new posts will be
+  * the method was executed. If it's the first time, no new posts will be
   * returned but the timestamp will be saved.
   */
   checkForNewPosts: function(callback) {
