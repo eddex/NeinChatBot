@@ -4,7 +4,7 @@ console.log("#################################");
 console.log("# NeinChatBot Telegram Bot Server");
 console.log("#################################\n");
 
-const teleBot = require('TeleBot');
+const teleBot = require('telebot');
 const fs = require('fs');
 
 // load Telegram bot token from file and create bot
