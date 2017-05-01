@@ -76,20 +76,19 @@ bot.on('/unsubscribe', msg => {
 * If the message contains an url to a post, the op of the post is returned.
 */
 bot.on('text', msg => {
-  DBAccess.createUserIfNotExists(msg.chat.id, msg.from, function() {
-    if (!msg.text.startsWith("http://getcookie.com/p/")) {
-      if (!msg.text.startsWith('/debug')) {
-        console.log("received unsupported text: " + msg.text);
-      }
-      return;
+  DBAccess.createUserIfNotExists(msg.chat.id, msg.from);
+  if (!msg.text.startsWith("http://getcookie.com/p/")) {
+    if (!msg.text.startsWith('/debug')) {
+      console.log("received unsupported text: " + msg.text);
     }
-    let checker = require('./post_checker.js');
-    let chatId = msg.chat.id;
-    console.log('text=' + msg.text);
-    checker.getOp(msg.text, function(op) {
-      console.log('op=' + op);
-      return bot.sendMessage(chatId, `OP is: ${ op }`);
-    });
+    return;
+  }
+  let checker = require('./post_checker.js');
+  let chatId = msg.chat.id;
+  console.log('text=' + msg.text);
+  checker.getOp(msg.text, function(op) {
+    console.log('op=' + op);
+    return bot.sendMessage(chatId, `OP is: ${ op }`);
   });
 });
 
