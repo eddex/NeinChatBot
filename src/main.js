@@ -27,7 +27,7 @@ CronManager.startJob('*/5 * * * *', function() { // run every 5 minutes.
       }
       for (var post of newPosts) {
         formatDateTime(post.created_at, function(time) {
-          var text = `New Post (${ time }):\n${ post.title }\n\nOP: ${ post.owner.username }`;
+          var text = `${ time }\nOP: ${ post.owner.username }\n\n${ post.title }`;
           console.log('cron job: sending message to subscribers with title: ' + post.title);
           for (var chatId of chatIds) {
             sendNewPostToChat(chatId, post.cover_photo, text);
